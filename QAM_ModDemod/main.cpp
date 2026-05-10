@@ -1,11 +1,16 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <random>
 #include <vector>
 #include <cmath>
 #include <complex>
-#include <fstream>
+#include <cstdio>
 
 using namespace std;
+#ifdef _WIN32
+#define popen _popen
+#define pclose _pclose
+#endif
 
 class QAM_Mod {
 private:
@@ -95,7 +100,33 @@ public:
 		return demod_bits;
 	}
 };
+void PLOT(vector <double> variance, vector <double> ber_qpsk, vector <double> ber_qam16, vector <double> ber_qam64) {
+	FILE* gp = popen("gnuplot -persistent", "w");
+	if (gp) {
+		fprintf(gp, "set title 'BER vs variance'\n");
+		fprintf(gp, "set xlabel 'Variance'\n");
+		fprintf(gp, "set ylabel 'BER'\n");
+		fprintf(gp, "set logscale y\n");
+		fprintf(gp, "plot '-' with lines title 'QPSK', "
+			"'-' with lines title 'QAM16', "
+			"'-' with lines title 'QAM64'\n");
 
+		for (int i = 0; i < variance.size(); ++i)
+			fprintf(gp, "%f %f\n", variance[i], ber_qpsk[i]);
+		fprintf(gp, "e\n");
+
+		for (int i = 0; i < variance.size(); ++i)
+			fprintf(gp, "%f %f\n", variance[i], ber_qam16[i]);
+		fprintf(gp, "e\n");
+
+		for (int i = 0; i < variance.size(); ++i)
+			fprintf(gp, "%f %f\n", variance[i], ber_qam64[i]);
+		fprintf(gp, "e\n");
+
+		fflush(gp);
+		pclose(gp);
+	}
+}
 int main() { 
 	const int num_bit = 100000;
 	vector <double> ber_qpsk, ber_qam16, ber_qam64;
@@ -131,4 +162,5 @@ int main() {
 			else if (M == 64) {ber_qam64.push_back(ber); }
 		}
 	}
+	PLOT(variance, ber_qpsk, ber_qam16, ber_qam64);
 };

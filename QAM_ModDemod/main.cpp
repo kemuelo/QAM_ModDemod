@@ -40,7 +40,7 @@ public:
 		vector <complex<double>> symb;
 		for (int i = 0; i < bits.size(); i += num_bits) {
 			int symb_indx = 0;
-			for (int j = 0; i < num_bits; j++) {
+			for (int j = 0; j < num_bits; j++) {
 				if (i + j < bits.size()) { symb_indx = (symb_indx << 1) | bits[i + j]; }
 			}
 			symb.push_back(star[symb_indx]);
@@ -64,10 +64,41 @@ public:
 	}
 };
 
+class QAM_Demod {
+private:
+	int M;
+	int num_bits;
+	vector <complex<double>> star;
+
+public:
+	QAM_Demod(int M_num, const vector <complex<double>>& refer_star) : M(M_num), star(refer_star) {
+		num_bits = log2(M);
+	}
+	vector <int> demod(const vector <complex<double>>& noise_symb) {
+		vector <int> demod_bits;
+
+		for (const auto& sym : noise_symb) {
+			double min_dist = 1e9;
+			int ideal_index = 0;
+
+			for (int i = 0; i < M; ++i) {
+				double dist = norm(sym - star[i]);
+				if (dist < min_dist) {
+					min_dist = dist;
+					ideal_index = i;
+				}
+			}
+			for (int j = num_bits - 1; j >= 0; --j) {
+				demod_bits.push_back((ideal_index >> j) & 1);
+			}
+		}
+		return demod_bits;
+	}
+};
 
 int main() { 
-	const int num_bit = 10000;
-	vector <int> M_val = { 4,16,64 };
+	const int num_bit = 1;
+	vector <double> ber_qpsk, ber_qam16, ber_qam64;
 	vector <double> variance;
 
 	vector <int> tx_bit(num_bit);
@@ -76,4 +107,28 @@ int main() {
 	uniform_int_distribution<> dist(0, 1);
 	for (int i = 0; i < num_bit; ++i) { tx_bit[i] = dist(gen); }
 
+	AWGN_channel channel;
+
+	for (double v = 0.01; v <= 1.0; v += 0.05) {
+		variance.push_back(v);
+
+		for (int M : {4, 16, 64}) {
+			QAM_Mod modulator(M);
+			QAM_Demod demodulator(M, modulator.get_star());
+
+			vector <complex<double>> tx_symb = modulator.modulate(tx_bit);
+			vector <complex<double>> rx_symb = channel.noise(tx_symb, v);
+			vector <int> rx_bit = demodulator.demod(rx_symb);
+
+			int error_cnt = 0;
+			int compare_len = min(tx_bit.size(), rx_bit.size());
+			for (int i = 0; i < compare_len; ++i) {
+				if (tx_bit[i] != rx_bit[i]) { error_cnt++; }
+			}
+			double ber = static_cast <double>(error_cnt) / compare_len;
+			if (M == 4) {ber_qpsk.push_back(ber); }
+			else if (M == 16) {ber_qam16.push_back(ber); }
+			else if (M == 64) {ber_qam64.push_back(ber); }
+		}
+	}
 };

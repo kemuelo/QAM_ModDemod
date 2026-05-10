@@ -52,10 +52,23 @@ public:
 	}
 };
 
+class AWGN_channel {
+public:
+	vector <complex<double>> noise(const vector <complex<double>>& symb, double variance) {
+		vector <complex<double>> noise_symb;
+		random_device rd;
+		mt19937 gen(rd());
+		normal_distribution<double> dist(0.0, sqrt(variance / 2.0));
+		for (const auto& sym : symb) { noise_symb.push_back(sym + complex<double>(dist(gen), dist(gen))); }
+		return noise_symb;
+	}
+};
+
 
 int main() { 
 	const int num_bit = 10000;
 	vector <int> M_val = { 4,16,64 };
+	vector <double> variance;
 
 	vector <int> tx_bit(num_bit);
 	random_device rd;

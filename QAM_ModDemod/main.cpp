@@ -97,7 +97,7 @@ public:
 };
 
 int main() { 
-	const int num_bit = 1;
+	const int num_bit = 100000;
 	vector <double> ber_qpsk, ber_qam16, ber_qam64;
 	vector <double> variance;
 

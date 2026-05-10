@@ -12,7 +12,7 @@ private:
 	int M;
 	int num_bits;
 	double norm_fact;
-	vector<complex<double>> star;
+	vector <complex<double>> star;
 	void gen_star() {
 		int k = sqrt(M);
 		for (int i = 0; i < M; i++) {
@@ -29,9 +29,38 @@ public:
 	QAM_Mod(int M_num) : M(M_num) {
 		num_bits = log2(M);
 
-		if (M == 4) {}
+		if (M == 4) { norm_fact = sqrt(2); }
+		else if (M == 16) { norm_fact = sqrt(10); }
+		else if (M == 64) { norm_fact = sqrt(42); }
+		else norm_fact = 1;
+
+		gen_star();
+	}
+	vector <complex<double>> modulate(const vector <int>& bits) {
+		vector <complex<double>> symb;
+		for (int i = 0; i < bits.size(); i += num_bits) {
+			int symb_indx = 0;
+			for (int j = 0; i < num_bits; j++) {
+				if (i + j < bits.size()) { symb_indx = (symb_indx << 1) | bits[i + j]; }
+			}
+			symb.push_back(star[symb_indx]);
+		}
+		return symb;
+	}
+	vector <complex<double>> get_star() {
+		return star;
 	}
 };
 
 
-int main() {  };
+int main() { 
+	const int num_bit = 10000;
+	vector <int> M_val = { 4,16,64 };
+
+	vector <int> tx_bit(num_bit);
+	random_device rd;
+	mt19937 gen(rd());
+	uniform_int_distribution<> dist(0, 1);
+	for (int i = 0; i < num_bit; ++i) { tx_bit[i] = dist(gen); }
+
+};

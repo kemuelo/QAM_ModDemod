@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QAM_ModDemod", "QAM_ModDemod\QAM_ModDemod.vcxproj", "{C70B93FE-38F0-430A-9670-8D16C18D2725}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C70B93FE-38F0-430A-9670-8D16C18D2725}.Debug|x64.ActiveCfg = Debug|x64
+		{C70B93FE-38F0-430A-9670-8D16C18D2725}.Debug|x64.Build.0 = Debug|x64
+		{C70B93FE-38F0-430A-9670-8D16C18D2725}.Debug|x86.ActiveCfg = Debug|Win32
+		{C70B93FE-38F0-430A-9670-8D16C18D2725}.Debug|x86.Build.0 = Debug|Win32
+		{C70B93FE-38F0-430A-9670-8D16C18D2725}.Release|x64.ActiveCfg = Release|x64
+		{C70B93FE-38F0-430A-9670-8D16C18D2725}.Release|x64.Build.0 = Release|x64
+		{C70B93FE-38F0-430A-9670-8D16C18D2725}.Release|x86.ActiveCfg = Release|Win32
+		{C70B93FE-38F0-430A-9670-8D16C18D2725}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D50A200B-39E3-46A6-A186-A4BF9856FA79}
+	EndGlobalSection
+EndGlobal
